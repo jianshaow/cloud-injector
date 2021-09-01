@@ -17,8 +17,11 @@ import (
 	"k8s.io/klog"
 )
 
-var scheme = runtime.NewScheme()
-var codecs = serializer.NewCodecFactory(scheme)
+var (
+	scheme       = runtime.NewScheme()
+	codecs       = serializer.NewCodecFactory(scheme)
+	deserializer = codecs.UniversalDeserializer()
+)
 
 func errorResponse(err error) *admsv1.AdmissionResponse {
 	return &admsv1.AdmissionResponse{
@@ -39,7 +42,6 @@ func admit(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
 
 	raw := admissionRequest.Object.Raw
 	pod := corev1.Pod{}
-	deserializer := codecs.UniversalDeserializer()
 	if _, _, err := deserializer.Decode(raw, nil, &pod); err != nil {
 		klog.Error(err)
 		return errorResponse(err)
@@ -79,7 +81,6 @@ func serveInject(w http.ResponseWriter, r *http.Request) {
 	requestedAR := admsv1.AdmissionReview{}
 	responseAR := admsv1.AdmissionReview{}
 
-	deserializer := codecs.UniversalDeserializer()
 	if _, _, err := deserializer.Decode(body, nil, &requestedAR); err != nil {
 		klog.Error(err)
 		responseAR.Response = errorResponse(err)
@@ -88,6 +89,7 @@ func serveInject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responseAR.Response.UID = requestedAR.Request.UID
+	responseAR.TypeMeta = requestedAR.TypeMeta
 
 	klog.V(2).Info(fmt.Sprintf("sending response: %v", responseAR.Response))
 

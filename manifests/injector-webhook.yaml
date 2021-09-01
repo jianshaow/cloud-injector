@@ -5,15 +5,18 @@ metadata:
   namespace: injector
 webhooks:
 - name: namespace.pod-inject.jianshaow.github.io
-  objectSelector:
-    matchLabels:
-      injection: enabled
   namespaceSelector:
     matchExpressions:
     - key: injection
       operator: In
       values:
       - enabled
+  objectSelector:
+    matchExpressions:
+    - key: sidecar.injection
+      operator: NotIn
+      values:
+      - "false"
   admissionReviewVersions:
     - v1
   clientConfig:
@@ -23,7 +26,7 @@ webhooks:
     #   name: pod-injector
     #   namespace: injector
     #   path: /inject
-    #   port: 8000
+    #   port: 8443
   rules:
   - operations:
     - CREATE
