@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -99,13 +100,26 @@ func serveInject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func configTLS(certFile string, keyFile string) *tls.Config {
+	sCert, err := tls.LoadX509KeyPair(certFile, keyFile)
+	if err != nil {
+		klog.Fatal(err)
+	}
+	return &tls.Config{
+		Certificates: []tls.Certificate{sCert},
+	}
+}
+
 func main() {
+	var certFile = flag.String("cert_file", "/certs/server.cer", "TLS certificate")
+	var keyFile = flag.String("key_file", "/certs/server.key", "TLS private key")
 	klog.InitFlags(nil)
 	flag.Parse()
 
 	http.HandleFunc("/inject", serveInject)
 	server := &http.Server{
-		Addr: ":8000",
+		Addr:      ":8443",
+		TLSConfig: configTLS(*certFile, *keyFile),
 	}
-	server.ListenAndServe()
+	server.ListenAndServeTLS("", "")
 }
