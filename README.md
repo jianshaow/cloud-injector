@@ -14,6 +14,7 @@ docker push jianshao/pod-injector:0.0.1
 ## Create webhook
 ~~~ shell
 kubectl create ns injector
+kubectl -n injector apply -f manifests/injector-certs.yaml
 kubectl -n injector apply -f manifests/injector-deploy.yaml
 kubectl -n injector apply -f manifests/injector-deploy.yaml
 ~~~

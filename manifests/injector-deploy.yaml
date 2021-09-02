@@ -28,6 +28,15 @@ spec:
           requests:
             cpu: 10m
             memory: 100Mi
+        args:
+          - -v=2
+        volumeMounts:
+          - mountPath: /certs
+            name: injector-certs
+  volumes:
+  - name: injector-certs
+    secret:
+      name: injector-certs
 
 ---
 apiVersion: v1
