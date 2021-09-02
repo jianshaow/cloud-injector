@@ -10,11 +10,6 @@ CGO_ENABLED=0 GOOS=linux go build -a -v -o build/pod-injector cmd/main.go
 go run cmd/main.go -v=2 --cert_file=test/server.cer --key_file=test/server.key
 ~~~
 
-## Test locally
-~~~ shell
-curl -v --cacert test/ca.cer -H"Content-Type: application/json" https://localhost:8443/inject -d@test/request.json
-~~~
-
 ## Build docker
 ~~~ shell
 docker build -t jianshao/pod-injector:0.0.1 .
@@ -24,6 +19,11 @@ docker push jianshao/pod-injector:0.0.1
 ## Run with docker
 ~~~ shell
 docker run -d --rm -v $PWD/test:/certs -p 8443:8443 jianshao/pod-injector:0.0.1
+~~~
+
+## Verify locally
+~~~ shell
+curl -v --cacert test/ca.cer -H"Content-Type: application/json" https://localhost:8443/inject -d@test/request.json
 ~~~
 
 ## Create webhook
