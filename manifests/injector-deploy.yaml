@@ -29,14 +29,15 @@ spec:
             cpu: 10m
             memory: 100Mi
         args:
+          - pod-injector
           - -v=2
         volumeMounts:
           - mountPath: /certs
             name: injector-certs
-  volumes:
-  - name: injector-certs
-    secret:
-      name: injector-certs
+      volumes:
+      - name: injector-certs
+        secret:
+          secretName: injector-certs
 
 ---
 apiVersion: v1

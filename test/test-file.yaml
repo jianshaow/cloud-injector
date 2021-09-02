@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-cm
+data:
+  request.json: |
+    {
+      "apiVersion": "admission.k8s.io/v1",
+      "kind": "AdmissionReview",
+      "request": {
+        "uid": "705ab4f5-6393-11e8-b7cc-42010a800002",
+        "kind": {"group":"","version":"v1","kind":"pods"},
+        "resource": {"group":"","version":"v1","resource":"pods"},
+        "subResource": "scale",
+        "requestKind": {"group":"","version":"v1","kind":"pods"},
+        "requestResource": {"group":"","version":"v1","resource":"pods"},
+        "requestSubResource": "scale",
+        "name": "my-deployment",
+        "namespace": "my-namespace",
+        "operation": "UPDATE",
+        "userInfo": {
+          "username": "admin",
+          "uid": "014fbff9a07c",
+          "groups": ["system:authenticated","my-admin-group"],
+          "extra": {
+            "some-key":["some-value1", "some-value2"]
+          }
+        },
+        "object": {"apiVersion":"v1","kind":"pods"},
+        "oldObject": {"apiVersion":"v1","kind":"pods"},
+        "options": {"apiVersion":"meta.k8s.io/v1","kind":"UpdateOptions"},
+        "dryRun": false
+      }
+    }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secret
+type: Opaque
+data:
+  ca.cer: |
+    LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURtVENDQW9HZ0F3SUJBZ0lVVThDSTErOUI0
+    OElMYUh0QTRyeXlmQVJLWW9Bd0RRWUpLb1pJaHZjTkFRRUwKQlFBd1hERUxNQWtHQTFVRUJoTUNR
+    MDR4Q3pBSkJnTlZCQWdNQWtkRU1Rc3dDUVlEVlFRSERBSkhXakVPTUF3RwpBMVVFQ2d3RlEyeHZk
+    V1F4RVRBUEJnTlZCQXNNQ0VsdWFtVmpkRzl5TVJBd0RnWURWUVFEREFkc2IyTmhiRU5CCk1CNFhE
+    VEl4TURrd01UQTNNalV5TlZvWERUTXhNRGd6TURBM01qVXlOVm93WERFTE1Ba0dBMVVFQmhNQ1Ew
+    NHgKQ3pBSkJnTlZCQWdNQWtkRU1Rc3dDUVlEVlFRSERBSkhXakVPTUF3R0ExVUVDZ3dGUTJ4dmRX
+    UXhFVEFQQmdOVgpCQXNNQ0VsdWFtVmpkRzl5TVJBd0RnWURWUVFEREFkc2IyTmhiRU5CTUlJQklq
+    QU5CZ2txaGtpRzl3MEJBUUVGCkFBT0NBUThBTUlJQkNnS0NBUUVBMGdsd1JrQ2ZwQ0hZaFhncWg0
+    NHIwRHdCb1Z5cUlBbkI5ODBFdXY2ZnRnV2gKQnN2TStldys1UThBMHBFQzh3ZUcyRS80VHFvMTJi
+    ejViN0k3T05KSjVSZmhwdEJNTTBtS0ZheWVmL0N4VmRBVQpFS210WE4zYnFTeGhwcUpQT0R6dWMr
+    Tm5lWSt5MTRYcEF2REI5WHZzWlpPaWFNSlRQNi9xOXN3azB0Nk84dVErClNYVUxuWms1d0hrT1ho
+    OGttUFhsMUQ3ZWZKZWhPbDcvWlNNcjNtaGtpb254MW5kbTJWY0M0NTl1SERUZlVuYUQKOWc2Z3Jn
+    S1FIY3lFT2tUc24xOTZJZk5USHFJWnByL3R6UVZoVmlQSVpZdkwzNE9ua2dQOXhxdGswNUhqdEpW
+    RwpFdVJtb2w4ODM5bUZGRjNWOEdSQUkyWDJmdUhzV0ZCMXk4Z1pHS0phL3dJREFRQUJvMU13VVRB
+    ZEJnTlZIUTRFCkZnUVVFZ3U2aE9LQjNTVDNmUUNuOTBhdGRwbm55WVV3SHdZRFZSMGpCQmd3Rm9B
+    VUVndTZoT0tCM1NUM2ZRQ24KOTBhdGRwbm55WVV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdr
+    cWhraUc5dzBCQVFzRkFBT0NBUUVBbXpFYgpwZnNqVEZEN1pnMktkR2V3d0hwb2dXVys0WUtXcHlZ
+    WFl5S0psMFRqVDNONW5vY2Rjcjg5ZjNCZ3BpOGtiT0Z0CkV0VHp6R2paZU9zdTdKdUZKbTU0NXZl
+    bkNVN0o4aGVYQ0FJcGpUekgzM1lWa21GOVB6NDE2MVFqcC9BeFExMXoKMGtpT0ZCenBSSE0xK2dj
+    M0dqV3poZlVWQXpNbXNOSlJLdXBZcngrMWRac01mRm1yUkMvNW1HeWxLVE1OaWU1SQpSd0lRenZT
+    MVB5UlQ5S29yYUFIdGNkODA1cUpoRGk2L2FqcEZIK2hRdFlnU2tvb2IvMWI3a01ZMVVDMkEvWWVX
+    ClBnUFo5eXI4NWJuTXc4TGNnZ3VNeVhvRDdGS1NKaG5ZVFMydGtuVzFjUUJmSnhFN0llaTRHeXlX
+    dEVtTmFIWlYKYkM4VEVVUlc1RUxPTWJ2bjVBPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=

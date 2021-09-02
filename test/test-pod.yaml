@@ -16,8 +16,13 @@ spec:
     command: ["/bin/sh", "-c", "while true; do sleep 10; echo wakedup; done"]
     volumeMounts:
       - mountPath: /test
-        name: test-file
+        name: test-cm
+      - mountPath: /certs
+        name: test-secret
   volumes:
-  - name: test-file
+  - name: test-cm
     configMap:
       name: test-cm
+  - name: test-secret
+    secret:
+      secretName: test-secret
