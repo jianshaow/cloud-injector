@@ -18,8 +18,8 @@ import (
 
 const (
 	podsInitContainerPatch string = `[
-		 {"op":"add","path":"/spec/initContainers","value":[{"image":"alpine","name":"injected-init-container","resources":{},"command":["echo execute injected init..."]}]}
-	]`
+        {"op":"add","path":"/spec/initContainers","value":[{"image":"alpine:3.14.2","name":"injected-init-container","resources":{},"command":["/bin/sh","-c","echo initializing..."]}]}
+    ]`
 )
 
 var (
