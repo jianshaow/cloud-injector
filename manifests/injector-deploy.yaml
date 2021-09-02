@@ -20,7 +20,7 @@ spec:
       - name: authn-server
         image: jianshao/pod-injector:0.0.1
         ports:
-        - containerPort: 8000
+        - containerPort: 8443
         resources:
           limits:
             cpu: 100m
@@ -40,6 +40,6 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 8000
+    port: 8443
   selector:
     app: pod-injector
