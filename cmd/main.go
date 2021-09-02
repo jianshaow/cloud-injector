@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
 	admsv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -15,6 +14,12 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/klog"
+)
+
+const (
+	podsInitContainerPatch string = `[
+		 {"op":"add","path":"/spec/initContainers","value":[{"image":"alpine","name":"injected-init-container","resources":{},"command":["echo execute injected init..."]}]}
+	]`
 )
 
 var (
@@ -31,7 +36,7 @@ func errorResponse(err error) *admsv1.AdmissionResponse {
 	}
 }
 
-func admit(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
+func mutatePods(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
 	klog.V(2).Info("admitting pods")
 	podResource := metav1.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}
 	if admissionRequest.Resource != podResource {
@@ -46,19 +51,15 @@ func admit(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
 		klog.Error(err)
 		return errorResponse(err)
 	}
-	admissionResponse := admsv1.AdmissionResponse{}
-	admissionResponse.Allowed = true
 
-	var msg string
-	if v, ok := pod.Labels["app"]; ok {
-		if v == "no-inject-app" {
-			admissionResponse.Allowed = false
-			msg = msg + "the pod contains unwanted label; "
-		}
+	patchType := admsv1.PatchTypeJSONPatch
+	admissionResponse := admsv1.AdmissionResponse{
+		UID:       admissionRequest.UID,
+		Allowed:   true,
+		Patch:     []byte(podsInitContainerPatch),
+		PatchType: &patchType,
 	}
-	if !admissionResponse.Allowed {
-		admissionResponse.Result = &metav1.Status{Message: strings.TrimSpace(msg)}
-	}
+
 	return &admissionResponse
 }
 
@@ -85,10 +86,9 @@ func serveInject(w http.ResponseWriter, r *http.Request) {
 		klog.Error(err)
 		responseAR.Response = errorResponse(err)
 	} else {
-		responseAR.Response = admit(*requestedAR.Request)
+		responseAR.Response = mutatePods(*requestedAR.Request)
 	}
 
-	responseAR.Response.UID = requestedAR.Request.UID
 	responseAR.TypeMeta = requestedAR.TypeMeta
 
 	klog.V(2).Info(fmt.Sprintf("sending response: %v", responseAR.Response))
