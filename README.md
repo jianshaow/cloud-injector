@@ -18,7 +18,7 @@ docker push jianshao/pod-injector:0.0.1
 
 ## Run with docker
 ~~~ shell
-docker run -d --rm -v $PWD/test:/certs -p 8443:8443 jianshao/pod-injector:0.0.1
+docker run -d --name pod-injector --rm -v $PWD/test:/certs -p 8443:8443 jianshao/pod-injector:0.0.1 pod-injector -v=2
 ~~~
 
 ## Verify locally
