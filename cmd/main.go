@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	defaultPatch string = `[{"op":"add","path":"/metadata/annotations/-","value":{"injected":"true"}}]`
+	defaultPatch string = `[{"op":"add","path":"/metadata/annotations","value":{"injected":"true"}}]`
 )
 
 var (
