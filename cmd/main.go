@@ -1,12 +1,12 @@
 package main
 
 import (
-	"crypto/tls"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	admsv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -17,16 +17,14 @@ import (
 )
 
 const (
-	podsInitContainerPatch string = `[
-{"op":"add","path":"/spec/initContainers","value":[{"image":"alpine:3.14.2","name":"injected-init-container","command":["/bin/sh","-c","echo initializing..."],"volumeMounts":[{"mountPath":"/mnt/shared","name":"injected-volume"}]}]},
-{"op":"add","path":"/spec/volumes/-","value":{"name":"injected-volume","emptyDir":{}}}
-    ]`
+	defaultPatch string = `[{"op":"add","path":"/metadata/annotations/-","value":{"injected":"true"}}]`
 )
 
 var (
 	scheme       = runtime.NewScheme()
 	codecs       = serializer.NewCodecFactory(scheme)
 	deserializer = codecs.UniversalDeserializer()
+	patchFile    string
 )
 
 func errorResponse(err error) *admsv1.AdmissionResponse {
@@ -35,6 +33,14 @@ func errorResponse(err error) *admsv1.AdmissionResponse {
 			Message: err.Error(),
 		},
 	}
+}
+
+func getPodPatch() []byte {
+	podPatch, err := os.ReadFile(patchFile)
+	if err != nil {
+		return []byte(defaultPatch)
+	}
+	return podPatch
 }
 
 func mutatePods(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
@@ -57,7 +63,7 @@ func mutatePods(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionRespo
 	admissionResponse := admsv1.AdmissionResponse{
 		UID:       admissionRequest.UID,
 		Allowed:   true,
-		Patch:     []byte(podsInitContainerPatch),
+		Patch:     getPodPatch(),
 		PatchType: &patchType,
 	}
 
@@ -103,26 +109,17 @@ func serveInject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func configTLS(certFile string, keyFile string) *tls.Config {
-	sCert, err := tls.LoadX509KeyPair(certFile, keyFile)
-	if err != nil {
-		klog.Fatal(err)
-	}
-	return &tls.Config{
-		Certificates: []tls.Certificate{sCert},
-	}
-}
-
 func main() {
-	var certFile = flag.String("cert_file", "/certs/server.cer", "TLS certificate")
-	var keyFile = flag.String("key_file", "/certs/server.key", "TLS private key")
+	var certFileFlag = flag.String("cert-file", "/certs/server.cer", "TLS certificate")
+	var keyFileFlag = flag.String("key-file", "/certs/server.key", "TLS private key")
+	var patchFileFlag = flag.String("patch-file", "/patchs/patch.json", "TLS private key")
 	klog.InitFlags(nil)
 	flag.Parse()
+	patchFile = *patchFileFlag
 
 	http.HandleFunc("/inject", serveInject)
 	server := &http.Server{
-		Addr:      ":8443",
-		TLSConfig: configTLS(*certFile, *keyFile),
+		Addr: ":8443",
 	}
-	server.ListenAndServeTLS("", "")
+	server.ListenAndServeTLS(*certFileFlag, *keyFileFlag)
 }

@@ -7,7 +7,7 @@ CGO_ENABLED=0 GOOS=linux go build -a -v -o build/pod-injector cmd/main.go
 
 ## Run locally (for test)
 ~~~ shell
-go run cmd/main.go -v=2 --cert_file=test/server.cer --key_file=test/server.key
+go run cmd/main.go -v=2 --cert-file=test/server.cer --key-file=test/server.key --patch-file=test/patch.json
 ~~~
 
 ## Build docker
@@ -24,14 +24,16 @@ docker run -d --name pod-injector --rm -v $PWD/test:/certs -p 8443:8443 jianshao
 ## Verify locally
 ~~~ shell
 curl -v --cacert test/ca.cer -H"Content-Type: application/json" https://localhost:8443/inject -d@test/request.json
+curl -s --cacert test/ca.cer -H"Content-Type: applicationjson" https://localhost:8443/inject -d@test/request.json|jq -r '.response.patch'|base64 -d
 ~~~
 
 ## Create webhook
 ~~~ shell
 kubectl create ns injector
-kubectl -n injector apply -f manifests/injector-certs.yaml
-kubectl -n injector apply -f manifests/injector-deploy.yaml
-kubectl -n injector apply -f manifests/injector-webhook.yaml
+kubectl apply -f manifests/injector-certs.yaml
+kubectl apply -f manifests/injector-patchs-example.yaml
+kubectl apply -f manifests/injector-deploy.yaml
+kubectl apply -f manifests/injector-webhook.yaml
 ~~~
 
 ## Demo pod injection

@@ -34,10 +34,15 @@ spec:
         volumeMounts:
           - mountPath: /certs
             name: injector-certs
+          - mountPath: /patchs
+            name: injector-patchs
       volumes:
       - name: injector-certs
         secret:
           secretName: injector-certs
+      - name: injector-patchs
+        configMap:
+          name: injector-patchs
 
 ---
 apiVersion: v1
