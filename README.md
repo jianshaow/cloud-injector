@@ -24,7 +24,7 @@ docker run -d --name pod-injector --rm -v $PWD/test:/certs -p 8443:8443 jianshao
 ## Verify locally
 ~~~ shell
 curl -v --cacert test/ca.cer -H"Content-Type: application/json" https://localhost:8443/inject -d@test/request.json
-curl -s --cacert test/ca.cer -H"Content-Type: applicationjson" https://localhost:8443/inject -d@test/request.json|jq -r '.response.patch'|base64 -d
+curl -s --cacert test/ca.cer -H"Content-Type: application/json" https://localhost:8443/inject -d@test/request.json|jq -r '.response.patch'|base64 -d
 ~~~
 
 ## Create webhook
