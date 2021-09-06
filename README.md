@@ -14,6 +14,11 @@ go run cmd/main.go -v=2 --cert-file=test/server.cer --key-file=test/server.key -
 ~~~ shell
 docker build -t jianshao/pod-injector:0.0.1 .
 docker push jianshao/pod-injector:0.0.1
+
+docker build -t jianshao/demo-app:0.0.1 demo/original/
+docker push jianshao/demo-app:0.0.1
+docker build -t jianshao/demo-modifier:0.0.1 demo/modifier/
+docker push jianshao/demo-modifier:0.0.1
 ~~~
 
 ## Run with docker
@@ -40,6 +45,6 @@ kubectl apply -f manifests/injector-webhook.yaml
 ~~~ shell
 kubectl create ns bar
 kubectl label ns bar injection=enabled
-kubectl -n bar apply -f test/test-cm.yaml
-kubectl -n bar apply -f test/test-pod.yaml
+kubectl -n bar apply -f demo/demo-file.yaml
+kubectl -n bar apply -f demo/demo-pod.yaml
 ~~~
