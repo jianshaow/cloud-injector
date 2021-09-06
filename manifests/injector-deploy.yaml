@@ -12,12 +12,10 @@ spec:
     metadata:
       labels:
         app: pod-injector
-      annotations:
-        sidecar.istio.io/inject: "false"
     spec:
       restartPolicy: Always
       containers:
-      - name: authn-server
+      - name: pod-injector
         image: jianshao/pod-injector:0.0.1
         ports:
         - containerPort: 8443

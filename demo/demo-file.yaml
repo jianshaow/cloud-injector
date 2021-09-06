@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: test-cm
+  name: demo-cm
 data:
   request.json: |
     {
@@ -36,7 +36,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: test-secret
+  name: demo-secret
 type: Opaque
 data:
   ca.cer: |

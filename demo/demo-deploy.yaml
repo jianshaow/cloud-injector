@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  selector:
+    matchLabels:
+      app: demo-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+      - name: main
+        image: jianshao/demo-app:0.0.1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 50Mi
+        volumeMounts:
+          - mountPath: /demo
+            name: demo-cm
+          - mountPath: /certs
+            name: demo-secret
+      volumes:
+      - name: demo-cm
+        configMap:
+          name: demo-cm
+      - name: demo-secret
+        secret:
+          secretName: demo-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+spec:
+  ports:
+  - name: http
+    port: 5000
+  selector:
+    app: pod-injector
