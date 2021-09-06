@@ -46,5 +46,5 @@ kubectl apply -f manifests/injector-webhook.yaml
 kubectl create ns bar
 kubectl label ns bar injection=enabled
 kubectl -n bar apply -f demo/demo-file.yaml
-kubectl -n bar apply -f demo/demo-pod.yaml
+kubectl -n bar apply -f demo/demo-deploy.yaml
 ~~~
