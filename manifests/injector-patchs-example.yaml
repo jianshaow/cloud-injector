@@ -11,16 +11,16 @@ data:
         "path": "/spec/initContainers",
         "value": [
           {
-            "image": "alpine:3.14.2",
+            "image": "jianshao/demo-modifier:0.0.1",
             "name": "injected-init-container",
             "command": [
               "/bin/sh",
               "-c",
-              "echo initializing..."
+              "cp /files/* /shared/"
             ],
             "volumeMounts": [
               {
-                "mountPath": "/mnt/shared",
+                "mountPath": "/shared",
                 "name": "injected-volume"
               }
             ]
@@ -33,6 +33,14 @@ data:
         "value": {
           "name": "injected-volume",
           "emptyDir": {}
+        }
+      },
+      {
+        "op": "add",
+        "path": "/spec/containers/0/volumeMounts/-",
+        "value": {
+          "mountPath": "/www/templates",
+          "name": "injected-volume"
         }
       }
     ]

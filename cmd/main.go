@@ -44,7 +44,7 @@ func getPodPatch() []byte {
 }
 
 func mutatePods(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
-	klog.V(2).Info("admitting pods")
+	klog.V(2).Info("mutating pods")
 	podResource := metav1.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}
 	if admissionRequest.Resource != podResource {
 		err := fmt.Errorf("expect resource to be %s", podResource)
