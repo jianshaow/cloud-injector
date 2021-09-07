@@ -1,20 +1,33 @@
 <html>
 
 <head>
-    <title>User Info</title>
+  <title>User Info</title>
 </head>
 
 <body>
-    <h1>Welcome to Modified User Profile!</h1>
-    <br />
+  <h1>Welcome to Advanced User Profile!</h1>
+  <br />
 
-    <div>
-        <h2>
-            <li>Your Id is {{ user_id }}</li>
-            <li>name: {{ name }}</li>
-            <li>email: {{ email }}</li>
-        </h2>
-    </div>
+  <div>
+    <h2>
+    {% if user %}
+      Your Information:
+      <li>Id: {{ user.id }}</li>
+      <li>Name: {{ user.name }}</li>
+      <li>Sexual: {{ user.sexual }}</li>
+      <li>Email: {{ user.email }}</li>
+    {% elif error %}
+      Error: {{ error }} <br />
+      <a href="/">return</a>
+    {% else %}
+      Enter Your Id
+      <form action="/">
+        <input type="text" name="userId" value="1"/>
+        <input type="submit" />
+      </form>
+    {% endif %}
+    </h2>
+  </div>
 </body>
 
 </html>

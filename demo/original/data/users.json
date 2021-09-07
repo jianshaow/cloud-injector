@@ -1,0 +1,14 @@
+{
+  "1": {
+    "id": "1",
+    "name": "Bob",
+    "sexual": "male",
+    "email": "bob@abc.com"
+  },
+  "2": {
+    "id": "2",
+    "name": "Sally",
+    "sexual": "female",
+    "email": "sally@abc.com"
+  }
+}
