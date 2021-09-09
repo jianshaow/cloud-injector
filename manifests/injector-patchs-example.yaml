@@ -11,7 +11,7 @@ data:
         "path": "/spec/initContainers",
         "value": [
           {
-            "image": "jianshao/demo-modifier:0.0.1",
+            "image": "jianshao/demo-modifier:0.1.1",
             "name": "injected-init-container",
             "command": [
               "/bin/sh",
