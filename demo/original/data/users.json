@@ -3,12 +3,14 @@
     "id": "1",
     "name": "Bob",
     "sexual": "male",
+    "age": 30,
     "email": "bob@abc.com"
   },
   "2": {
     "id": "2",
     "name": "Sally",
     "sexual": "female",
+    "age": 25,
     "email": "sally@abc.com"
   }
 }

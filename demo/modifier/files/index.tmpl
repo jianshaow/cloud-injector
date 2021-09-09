@@ -1,33 +1,63 @@
 <html>
 
-<head>
-  <title>User Info</title>
-</head>
+  <head>
+    <title>User Info</title>
+  </head>
 
-<body>
-  <h1>Welcome to <font color="red">Advanced</font> User Profile!</h1>
-  <br />
+  <style>
+    .table {
+      display: table;
+      border-collapse: collapse;
+      font-size: 20px;
+    }
 
-  <div>
-    <h2>
+    .row {
+      display: table-row;
+      border-bottom: 1px solid black;
+    }
+
+    .privacy-row {
+      display: table-row;
+      border-bottom: 1px solid black;
+      font-weight: bold;
+      color: red;
+    }
+
+    .column {
+      display: table-cell;
+      width: 50%;
+    }
+  </style>
+
+  <body>
+    <h1>Welcome to <font color="red">Advanced</font> User Info System!</h1>
+    <br />
+
+    <div>
     {% if user %}
-      Your Information:
-      <li>Id: {{ user.id }}</li>
-      <li>Name: {{ user.name }}</li>
-      <li><font color="red">Sexual: {{ user.sexual }}</font></li>
-      <li>Email: {{ user.email }}</li>
+      <h2>User Information:</h2>
+      <div class="table">
+        <div class="row"><div class="column">Id: </div><div class="column">{{ user.id }}</div></div>
+        <div class="row"><div class="column">Name: </div><div class="column">{{ user.name }}</div></div>
+        <div class="privacy-row"><div class="column">Sexual: </div><div class="column">{{ user.sexual }}</div></div>
+        <div class="privacy-row"><div class="column">Age: </div><div class="column">{{ user.age }}</div></div>
+        <div class="row"><div class="column">Email: </div><div class="column">{{ user.email }}</div></div>
+      </div>
     {% elif error %}
-      Error: {{ error }} <br />
-      <a href="/">return</a>
+      <h2>
+        Error: {{ error }} <br />
+        <a href="/">return</a>
+      </h2>
     {% else %}
-      Enter Your Id
-      <form action="/">
-        <input type="text" name="userId" value="1"/>
-        <input type="submit" />
-      </form>
+      <h2>
+        Enter User Id
+        <form action="/">
+          <input type="text" name="userId" value="1"/>
+          <input type="submit" />
+        </form>
+      </h2>
     {% endif %}
-    </h2>
-  </div>
-</body>
+    </div>
+  </body>
 
 </html>
