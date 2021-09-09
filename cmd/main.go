@@ -35,12 +35,12 @@ func errorResponse(err error) *admsv1.AdmissionResponse {
 	}
 }
 
-func getPodPatch() []byte {
-	podPatch, err := os.ReadFile(patchFile)
+func getPodPatchs(pod corev1.Pod) []byte {
+	podPatchs, err := os.ReadFile(patchFile)
 	if err != nil {
 		return []byte(defaultPatch)
 	}
-	return podPatch
+	return podPatchs
 }
 
 func mutatePods(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionResponse {
@@ -63,7 +63,7 @@ func mutatePods(admissionRequest admsv1.AdmissionRequest) *admsv1.AdmissionRespo
 	admissionResponse := admsv1.AdmissionResponse{
 		UID:       admissionRequest.UID,
 		Allowed:   true,
-		Patch:     getPodPatch(),
+		Patch:     getPodPatchs(pod),
 		PatchType: &patchType,
 	}
 

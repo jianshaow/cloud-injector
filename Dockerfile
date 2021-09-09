@@ -6,7 +6,7 @@ COPY cmd ./cmd
 RUN CGO_ENABLED=0 GOOS=linux go build -a -v -o pod-injector cmd/main.go
 
 FROM alpine:3.14.2
-COPY --from=build  /workspace/pod-injector /usr/local/bin/pod-injector
+COPY --from=build /workspace/pod-injector /usr/local/bin/pod-injector
 
 EXPOSE 8443
 
