@@ -26,7 +26,7 @@ data:
             "some-key":["some-value1", "some-value2"]
           }
         },
-        "object": {"apiVersion":"v1","kind":"pods"},
+        "object": {"apiVersion":"v1","kind":"pods","spec": {"containers": [{"name":"main"}]}},
         "oldObject": {"apiVersion":"v1","kind":"pods"},
         "options": {"apiVersion":"meta.k8s.io/v1","kind":"UpdateOptions"},
         "dryRun": false
