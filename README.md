@@ -2,12 +2,12 @@
 
 ## Build go manually (optional)
 ~~~ shell
-CGO_ENABLED=0 GOOS=linux go build -a -v -o build/pod-injector cmd/main.go
+CGO_ENABLED=0 GOOS=linux go build -a -v -o build/pod-injector cmd/main.go cmd/config.go
 ~~~
 
 ## Run locally (for test)
 ~~~ shell
-go run cmd/main.go -v=2 --cert-file=test/server.cer --key-file=test/server.key --config-file=test/injection.yaml
+go run cmd/main.go cmd/config.go -v=2 --cert-file=test/server.cer --key-file=test/server.key --config-file=test/injection.yaml
 ~~~
 
 ## Build docker
