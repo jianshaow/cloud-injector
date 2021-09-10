@@ -20,7 +20,7 @@ var (
 	codecs       = serializer.NewCodecFactory(scheme)
 	deserializer = codecs.UniversalDeserializer()
 	configFile   string
-	patchedFlag  = Patch{Op: "add", Path: "/metadata/annotations", Value: map[string]string{"injected": "true"}}
+	patchedFlag  = Patch{Op: "add", Path: "/metadata/labels", Value: map[string]string{"injected": "true"}}
 )
 
 func errorResponse(err error) *admsv1.AdmissionResponse {
