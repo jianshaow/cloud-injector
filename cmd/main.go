@@ -20,7 +20,6 @@ var (
 	codecs       = serializer.NewCodecFactory(scheme)
 	deserializer = codecs.UniversalDeserializer()
 	configFile   string
-	patchedFlag  = Patch{Op: "add", Path: "/metadata/labels", Value: map[string]string{"injected": "true"}}
 )
 
 func errorResponse(err error) *admsv1.AdmissionResponse {
@@ -35,12 +34,19 @@ func getPodPatchs(pod corev1.Pod) []byte {
 	config := loadConfig(configFile)
 	podInjection := config.PodInjection
 
-	patchs := []Patch{patchedFlag}
+	patchedLabel := Patch{Op: "add"}
+	if len(pod.ObjectMeta.Labels) > 0 {
+		patchedLabel.Path = "/metadata/labels/-"
+		patchedLabel.Value = map[string]string{"injected": "true"}
+	} else {
+		patchedLabel.Path = "/metadata/labels"
+		patchedLabel.Value = []map[string]string{{"injected": "true"}}
+	}
+	patchs := []Patch{patchedLabel}
 
 	for _, initContainer := range podInjection.InitContainers {
-		patch := Patch{}
-		patch.Op = "add"
-		if pod.Spec.InitContainers != nil {
+		patch := Patch{Op: "add"}
+		if len(pod.Spec.InitContainers) > 0 {
 			patch.Path = "/spec/initContainers/-"
 			patch.Value = initContainer
 		} else {
@@ -51,9 +57,8 @@ func getPodPatchs(pod corev1.Pod) []byte {
 	}
 
 	for _, container := range podInjection.Containers {
-		patch := Patch{}
-		patch.Op = "add"
-		if pod.Spec.Containers != nil {
+		patch := Patch{Op: "add"}
+		if len(pod.Spec.Containers) > 0 {
 			patch.Path = "/spec/containers/-"
 			patch.Value = container
 		} else {
@@ -64,9 +69,8 @@ func getPodPatchs(pod corev1.Pod) []byte {
 	}
 
 	for _, volume := range podInjection.Volumes {
-		patch := Patch{}
-		patch.Op = "add"
-		if pod.Spec.Volumes != nil {
+		patch := Patch{Op: "add"}
+		if len(pod.Spec.Volumes) > 0 {
 			patch.Path = "/spec/volumes/-"
 			patch.Value = volume
 		} else {
@@ -79,9 +83,8 @@ func getPodPatchs(pod corev1.Pod) []byte {
 	for index, podContainer := range pod.Spec.Containers {
 		volumeMounts := podInjection.VolumeMountPatchs[podContainer.Name]
 		for _, volumeMount := range volumeMounts {
-			patch := Patch{}
-			patch.Op = "add"
-			if podContainer.VolumeMounts != nil {
+			patch := Patch{Op: "add"}
+			if len(podContainer.VolumeMounts) > 0 {
 				patch.Path = fmt.Sprintf("/spec/containers/%d/volumeMounts/-", index)
 				patch.Value = volumeMount
 			} else {
