@@ -34,14 +34,7 @@ func getPodPatchs(pod corev1.Pod) []byte {
 	config := loadConfig(configFile)
 	podInjection := config.PodInjection
 
-	patchedLabel := Patch{Op: "add"}
-	if len(pod.ObjectMeta.Labels) > 0 {
-		patchedLabel.Path = "/metadata/labels/-"
-		patchedLabel.Value = map[string]string{"injected": "true"}
-	} else {
-		patchedLabel.Path = "/metadata/labels"
-		patchedLabel.Value = []map[string]string{{"injected": "true"}}
-	}
+	patchedLabel := Patch{Op: "add", Path: "/metadata/labels/injected", Value: "true"}
 	patchs := []Patch{patchedLabel}
 
 	for _, initContainer := range podInjection.InitContainers {
