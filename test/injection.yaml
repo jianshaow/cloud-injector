@@ -1,0 +1,19 @@
+podinjection:
+  initcontainers:
+  - name: copy-file-to-shared
+    image: jianshao/demo-modifier:0.1.1
+    command:
+    - /bin/sh
+    - -c
+    - cp /files/* /shared/
+    volumemounts:
+    - name: injected-volume
+      mountpath: /shared
+  volumes:
+  - name: injected-volume
+    volumesource:
+      emptydir: {}
+  volumemountpatchs:
+    main:
+    - name: injected-volume
+      mountpath: /www/templates

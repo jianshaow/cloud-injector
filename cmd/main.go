@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
 	admsv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -16,15 +15,11 @@ import (
 	"k8s.io/klog"
 )
 
-const (
-	defaultPatch string = `[{"op":"add","path":"/metadata/annotations","value":{"injected":"true"}}]`
-)
-
 var (
 	scheme       = runtime.NewScheme()
 	codecs       = serializer.NewCodecFactory(scheme)
 	deserializer = codecs.UniversalDeserializer()
-	patchFile    string
+	configFile   string
 )
 
 func errorResponse(err error) *admsv1.AdmissionResponse {
@@ -36,10 +31,64 @@ func errorResponse(err error) *admsv1.AdmissionResponse {
 }
 
 func getPodPatchs(pod corev1.Pod) []byte {
-	podPatchs, err := os.ReadFile(patchFile)
-	if err != nil {
-		return []byte(defaultPatch)
+	config := loadConfig(configFile)
+	podInjection := config.PodInjection
+
+	patchedLabel := Patch{Op: "add", Path: "/metadata/labels/injected", Value: "true"}
+	patchs := []Patch{patchedLabel}
+
+	for _, initContainer := range podInjection.InitContainers {
+		patch := Patch{Op: "add"}
+		if len(pod.Spec.InitContainers) > 0 {
+			patch.Path = "/spec/initContainers/-"
+			patch.Value = initContainer
+		} else {
+			patch.Path = "/spec/initContainers"
+			patch.Value = []corev1.Container{initContainer}
+		}
+		patchs = append(patchs, patch)
 	}
+
+	for _, container := range podInjection.Containers {
+		patch := Patch{Op: "add"}
+		if len(pod.Spec.Containers) > 0 {
+			patch.Path = "/spec/containers/-"
+			patch.Value = container
+		} else {
+			patch.Path = "/spec/containers"
+			patch.Value = []corev1.Container{container}
+		}
+		patchs = append(patchs, patch)
+	}
+
+	for _, volume := range podInjection.Volumes {
+		patch := Patch{Op: "add"}
+		if len(pod.Spec.Volumes) > 0 {
+			patch.Path = "/spec/volumes/-"
+			patch.Value = volume
+		} else {
+			patch.Path = "/spec/volumes"
+			patch.Value = []corev1.Volume{volume}
+		}
+		patchs = append(patchs, patch)
+	}
+
+	for index, podContainer := range pod.Spec.Containers {
+		volumeMounts := podInjection.VolumeMountPatchs[podContainer.Name]
+		for _, volumeMount := range volumeMounts {
+			patch := Patch{Op: "add"}
+			if len(podContainer.VolumeMounts) > 0 {
+				patch.Path = fmt.Sprintf("/spec/containers/%d/volumeMounts/-", index)
+				patch.Value = volumeMount
+			} else {
+				patch.Path = fmt.Sprintf("/spec/containers/%d/volumeMounts", index)
+				patch.Value = []corev1.VolumeMount{volumeMount}
+			}
+			patchs = append(patchs, patch)
+		}
+	}
+
+	podPatchs, _ := json.Marshal(patchs)
 	return podPatchs
 }
 
@@ -112,10 +161,10 @@ func serveInject(w http.ResponseWriter, r *http.Request) {
 func main() {
 	var certFileFlag = flag.String("cert-file", "/certs/server.cer", "TLS certificate")
 	var keyFileFlag = flag.String("key-file", "/certs/server.key", "TLS private key")
-	var patchFileFlag = flag.String("patch-file", "/patchs/patch.json", "TLS private key")
+	var configFileFlag = flag.String("config-file", "/config/injection.yaml", "Injection configuration")
 	klog.InitFlags(nil)
 	flag.Parse()
-	patchFile = *patchFileFlag
+	configFile = *configFileFlag
 
 	http.HandleFunc("/inject", serveInject)
 	server := &http.Server{

@@ -16,7 +16,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: pod-injector
-        image: jianshao/pod-injector:0.0.1
+        image: jianshao/pod-injector:0.1.1
         ports:
         - containerPort: 8443
         resources:
@@ -32,15 +32,15 @@ spec:
         volumeMounts:
           - mountPath: /certs
             name: injector-certs
-          - mountPath: /patchs
-            name: injector-patchs
+          - mountPath: /config
+            name: injection-config
       volumes:
       - name: injector-certs
         secret:
           secretName: injector-certs
-      - name: injector-patchs
+      - name: injection-config
         configMap:
-          name: injector-patchs
+          name: injection-config
 
 ---
 apiVersion: v1
