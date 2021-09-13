@@ -28,11 +28,17 @@ type (
 )
 
 func loadConfig(configFile string) InjectionConfig {
-	config_file, _ := os.ReadFile(configFile)
-	var config = &InjectionConfig{}
-	err := yaml.Unmarshal(config_file, config)
+	config := &InjectionConfig{}
+	configYaml, err := os.ReadFile(configFile)
+	if err != nil {
+		klog.Error(err)
+		return *config
+	}
+
+	err = yaml.Unmarshal(configYaml, config)
 	if err != nil {
 		klog.Error(err)
 	}
+
 	return *config
 }
