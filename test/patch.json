@@ -1,39 +1,44 @@
 [
-  {
-    "op": "add",
-    "path": "/spec/initContainers",
-    "value": [
-      {
-        "image": "jianshao/demo-modifier:0.1.1",
-        "name": "injected-init-container",
-        "command": [
-          "/bin/sh",
-          "-c",
-          "cp /files/* /shared/"
-        ],
-        "volumeMounts": [
-          {
-            "mountPath": "/shared",
-            "name": "injected-volume"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "op": "add",
-    "path": "/spec/volumes/-",
-    "value": {
-      "name": "injected-volume",
-      "emptyDir": {}
-    }
-  },
-  {
-    "op": "add",
-    "path": "/spec/containers/0/volumeMounts/-",
-    "value": {
-      "mountPath": "/www/templates",
-      "name": "injected-volume"
-    }
-  }
+	{
+		"op": "add",
+		"path": "/metadata/labels/injected",
+		"value": "true"
+	},
+	{
+		"op": "add",
+		"path": "/spec/initContainers",
+		"value": [
+			{
+				"name": "copy-file-to-shared",
+				"image": "jianshao/demo-modifier:0.1.1",
+				"command": [
+					"/bin/sh",
+					"-c",
+					"cp /files/* /shared/"
+				],
+				"resources": {},
+				"volumeMounts": [
+					{
+						"name": "injected-volume",
+						"mountPath": "/shared"
+					}
+				]
+			}
+		]
+	},
+	{
+		"op": "add",
+		"path": "/spec/volumes/-",
+		"value": {
+			"name": "injected-volume"
+		}
+	},
+	{
+		"op": "add",
+		"path": "/spec/containers/0/volumeMounts/-",
+		"value": {
+			"name": "injected-volume",
+			"mountPath": "/www/templates"
+		}
+	}
 ]
