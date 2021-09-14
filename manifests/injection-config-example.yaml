@@ -5,22 +5,22 @@ metadata:
   namespace: injector
 data:
   injection.yaml: |
-    podinjection:
-      initcontainers:
+    podInjection:
+      initContainers:
       - name: copy-file-to-shared
         image: jianshao/demo-modifier:0.1.1
         command:
         - /bin/sh
         - -c
         - cp /files/* /shared/
-        volumemounts:
+        volumeMounts:
         - name: injected-volume
-          mountpath: /shared
+          mountPath: /shared
       volumes:
       - name: injected-volume
-        volumesource:
-          emptydir: {}
-      volumemountpatchs:
+        volumeSource:
+          emptyDir: {}
+      volumeMountPatchs:
         main:
         - name: injected-volume
-          mountpath: /www/templates
+          mountPath: /www/templates
