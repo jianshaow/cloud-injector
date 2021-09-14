@@ -16,7 +16,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: pod-injector
-        image: jianshao/pod-injector:0.1.1
+        image: jianshao/pod-injector:0.1.3
         ports:
         - containerPort: 8443
         resources:

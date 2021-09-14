@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	yaml "gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/klog"
 )
 
@@ -28,11 +28,17 @@ type (
 )
 
 func loadConfig(configFile string) InjectionConfig {
-	config_file, _ := os.ReadFile(configFile)
-	var config = &InjectionConfig{}
-	err := yaml.Unmarshal(config_file, config)
+	config := &InjectionConfig{}
+	configYaml, err := os.ReadFile(configFile)
+	if err != nil {
+		klog.Error(err)
+		return *config
+	}
+
+	err = yaml.Unmarshal(configYaml, config)
 	if err != nil {
 		klog.Error(err)
 	}
+
 	return *config
 }

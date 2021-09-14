@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	admsv1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -20,6 +21,7 @@ var (
 	codecs       = serializer.NewCodecFactory(scheme)
 	deserializer = codecs.UniversalDeserializer()
 	configFile   string
+	patchFile    string
 )
 
 func errorResponse(err error) *admsv1.AdmissionResponse {
@@ -31,11 +33,22 @@ func errorResponse(err error) *admsv1.AdmissionResponse {
 }
 
 func getPodPatchs(pod corev1.Pod) []byte {
-	config := loadConfig(configFile)
-	podInjection := config.PodInjection
+	if patchFile != "" {
+		podPatchs, err := os.ReadFile(patchFile)
+		if err != nil {
+			klog.Error(err)
+		} else {
+			klog.Info("specified patch-file, ignore config-file")
+			klog.V(2).Info(fmt.Sprintf("pod patchs: %s", podPatchs))
+			return podPatchs
+		}
+	}
 
 	patchedLabel := Patch{Op: "add", Path: "/metadata/labels/injected", Value: "true"}
 	patchs := []Patch{patchedLabel}
+
+	config := loadConfig(configFile)
+	podInjection := config.PodInjection
 
 	for _, initContainer := range podInjection.InitContainers {
 		patch := Patch{Op: "add"}
@@ -88,7 +101,12 @@ func getPodPatchs(pod corev1.Pod) []byte {
 		}
 	}
 
-	podPatchs, _ := json.Marshal(patchs)
+	podPatchs, err := json.Marshal(patchs)
+	if err != nil {
+		klog.Error(err)
+	}
+
+	klog.V(2).Info(fmt.Sprintf("pod patchs: %s", podPatchs))
 	return podPatchs
 }
 
@@ -162,9 +180,11 @@ func main() {
 	var certFileFlag = flag.String("cert-file", "/certs/server.cer", "TLS certificate")
 	var keyFileFlag = flag.String("key-file", "/certs/server.key", "TLS private key")
 	var configFileFlag = flag.String("config-file", "/config/injection.yaml", "Injection configuration")
+	var patchFileFlag = flag.String("patch-file", "", "Patch file overriding config")
 	klog.InitFlags(nil)
 	flag.Parse()
 	configFile = *configFileFlag
+	patchFile = *patchFileFlag
 
 	http.HandleFunc("/inject", serveInject)
 	server := &http.Server{

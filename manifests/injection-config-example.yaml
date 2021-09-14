@@ -5,22 +5,68 @@ metadata:
   namespace: injector
 data:
   injection.yaml: |
-    podinjection:
-      initcontainers:
+    podInjection:
+      initContainers:
       - name: copy-file-to-shared
         image: jianshao/demo-modifier:0.1.1
         command:
         - /bin/sh
         - -c
         - cp /files/* /shared/
-        volumemounts:
+        volumeMounts:
         - name: injected-volume
-          mountpath: /shared
+          mountPath: /shared
       volumes:
       - name: injected-volume
-        volumesource:
-          emptydir: {}
-      volumemountpatchs:
+        volumeSource:
+          emptyDir: {}
+      volumeMountPatchs:
         main:
         - name: injected-volume
-          mountpath: /www/templates
+          mountPath: /www/templates
+
+  patch.json: |
+    [
+      {
+        "op": "add",
+        "path": "/metadata/labels/injected",
+        "value": "true"
+      },
+      {
+        "op": "add",
+        "path": "/spec/initContainers",
+        "value": [
+          {
+            "name": "copy-file-to-shared",
+            "image": "jianshao/demo-modifier:0.1.1",
+            "command": [
+              "/bin/sh",
+              "-c",
+              "cp /files/* /shared/"
+            ],
+            "resources": {},
+            "volumeMounts": [
+              {
+                "name": "injected-volume",
+                "mountPath": "/shared"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op": "add",
+        "path": "/spec/volumes/-",
+        "value": {
+          "name": "injected-volume"
+        }
+      },
+      {
+        "op": "add",
+        "path": "/spec/containers/0/volumeMounts/-",
+        "value": {
+          "name": "injected-volume",
+          "mountPath": "/www/templates"
+        }
+      }
+    ]
