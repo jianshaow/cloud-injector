@@ -14,10 +14,14 @@ type (
 	}
 
 	PodInjectionConfig struct {
-		InitContainers    []corev1.Container              `json:"initContainers,omitempty"`
-		Containers        []corev1.Container              `json:"containers,omitempty"`
-		Volumes           []corev1.Volume                 `json:"volumes,omitempty"`
-		VolumeMountPatchs map[string][]corev1.VolumeMount `json:"volumeMountPatchs,omitempty"`
+		InitContainers  []corev1.Container        `json:"initContainers,omitempty"`
+		Containers      []corev1.Container        `json:"containers,omitempty"`
+		Volumes         []corev1.Volume           `json:"volumes,omitempty"`
+		ContainerPatchs map[string]ContainerPatch `json:"containerPatchs,omitempty"`
+	}
+
+	ContainerPatch struct {
+		VolumeMounts []corev1.VolumeMount `json:"volumeMount,omitempty"`
 	}
 
 	Patch struct {

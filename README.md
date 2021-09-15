@@ -13,8 +13,8 @@ go run cmd/main.go cmd/config.go -v=2 --cert-file=test/server.cer --key-file=tes
 
 ## Build docker
 ~~~ shell
-docker build -t jianshao/pod-injector:0.1.3 .
-docker push jianshao/pod-injector:0.1.3
+docker build -t jianshao/pod-injector:0.1.4 .
+docker push jianshao/pod-injector:0.1.4
 
 docker build -t jianshao/demo-app:0.1.1 demo/original/
 docker push jianshao/demo-app:0.1.1
@@ -24,7 +24,7 @@ docker push jianshao/demo-modifier:0.1.1
 
 ## Run with docker
 ~~~ shell
-docker run -d --name pod-injector --rm -v $PWD/test:/certs -v $PWD/test:/config -p 8443:8443 jianshao/pod-injector:0.1.3 pod-injector -v=2
+docker run -d --name pod-injector --rm -v $PWD/test:/certs -v $PWD/test:/config -p 8443:8443 jianshao/pod-injector:0.1.4 pod-injector -v=2
 ~~~
 
 ## Verify locally
