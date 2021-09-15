@@ -15,6 +15,6 @@ podInjection:
       emptyDir: {}
   containerPatchs:
     main:
-      volumeMount:
+      volumeMounts:
       - name: injected-volume
         mountPath: /www/templates

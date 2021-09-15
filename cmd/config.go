@@ -21,7 +21,7 @@ type (
 	}
 
 	ContainerPatch struct {
-		VolumeMounts []corev1.VolumeMount `json:"volumeMount,omitempty"`
+		VolumeMounts []corev1.VolumeMount `json:"volumeMounts,omitempty"`
 	}
 
 	Patch struct {
