@@ -5,7 +5,7 @@ podInjection:
     command:
     - /bin/sh
     - -c
-    - cp /files/* /shared/
+    - "cp /files/* /shared/ -r"
     volumeMounts:
     - name: injected-volume
       mountPath: /shared
