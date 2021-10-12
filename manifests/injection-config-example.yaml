@@ -8,7 +8,7 @@ data:
     podInjection:
       initContainers:
       - name: copy-file-to-shared
-        image: jianshao/demo-modifier:0.1.1
+        image: jianshao/demo-modifier:0.1.2
         command:
         - /bin/sh
         - -c
@@ -25,6 +25,10 @@ data:
           volumeMounts:
           - name: injected-volume
             mountPath: /www/templates
+            subPath: templates
+          - name: injected-volume
+            mountPath: /www/static
+            subPath: static
 
   patch.json: |
     [

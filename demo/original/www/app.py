@@ -4,6 +4,7 @@ import sys
 
 app = Flask(__name__)
 
+index_tmpl = 'index.tmpl'
 
 @app.route('/', methods=['GET'])
 def callback():
@@ -11,11 +12,11 @@ def callback():
     if user_id:
         user = user_info.get(user_id)
         if user:
-            return render_template('index.tmpl', user=user)
+            return render_template(index_tmpl, user=user)
         else:
-            return render_template('index.tmpl', error="no user with id: "+user_id)
+            return render_template(index_tmpl, error="no user with id: " + user_id)
     else:
-        return render_template('index.tmpl')
+        return render_template(index_tmpl)
 
 
 def load_user_info(data_file):

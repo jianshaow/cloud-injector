@@ -18,8 +18,8 @@ docker push jianshao/pod-injector:0.1.4
 
 docker build -t jianshao/demo-app:0.1.1 demo/original/
 docker push jianshao/demo-app:0.1.1
-docker build -t jianshao/demo-modifier:0.1.1 demo/modifier/
-docker push jianshao/demo-modifier:0.1.1
+docker build -t jianshao/demo-modifier:0.1.2 demo/modifier/
+docker push jianshao/demo-modifier:0.1.2
 ~~~
 
 ## Run with docker

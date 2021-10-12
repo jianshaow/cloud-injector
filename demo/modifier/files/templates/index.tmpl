@@ -6,6 +6,8 @@
 
   <style>
     .table {
+      float: left;
+      width: 350px;
       display: table;
       border-collapse: collapse;
       font-size: 20px;
@@ -23,10 +25,20 @@
       color: red;
     }
 
+    .caption {
+      display: table-caption;
+      font-weight: bold;
+      width: 30%;
+    }
+
     .column {
       display: table-cell;
-      width: 50%;
+      width: 70%;
     }
+
+    .portrait {
+      margin-left: 360px;
+    } 
   </style>
 
   <body>
@@ -37,12 +49,13 @@
     {% if user %}
       <h2>User Information:</h2>
       <div class="table">
-        <div class="row"><div class="column">Id: </div><div class="column">{{ user.id }}</div></div>
-        <div class="row"><div class="column">Name: </div><div class="column">{{ user.name }}</div></div>
-        <div class="privacy-row"><div class="column">Sexual: </div><div class="column">{{ user.sexual }}</div></div>
-        <div class="privacy-row"><div class="column">Age: </div><div class="column">{{ user.age }}</div></div>
-        <div class="row"><div class="column">Email: </div><div class="column">{{ user.email }}</div></div>
+        <div class="row"><div class="caption">Id: </div><div class="column">{{ user.id }}</div></div>
+        <div class="row"><div class="caption">Name: </div><div class="column">{{ user.name }}</div></div>
+        <div class="privacy-row"><div class="caption">Sexual: </div><div class="column">{{ user.sexual }}</div></div>
+        <div class="privacy-row"><div class="caption">Age: </div><div class="column">{{ user.age }}</div></div>
+        <div class="row"><div class="caption">Email: </div><div class="column">{{ user.email }}</div></div>
       </div>
+      <div class="portrait"><img src="{{ url_for('static', filename=user.id + '.jpg') }}" height="180" /></div>
       <h2>
         <a href="/">return</a>
       </h2>
