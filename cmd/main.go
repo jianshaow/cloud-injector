@@ -87,8 +87,8 @@ func getPodPatchs(pod corev1.Pod) []byte {
 	}
 
 	for index, podContainer := range pod.Spec.Containers {
-		volumeMounts := podInjection.VolumeMountPatchs[podContainer.Name]
-		for _, volumeMount := range volumeMounts {
+		containerPatch := podInjection.ContainerPatchs[podContainer.Name]
+		for _, volumeMount := range containerPatch.VolumeMounts {
 			patch := Patch{Op: "add"}
 			if len(podContainer.VolumeMounts) > 0 {
 				patch.Path = fmt.Sprintf("/spec/containers/%d/volumeMounts/-", index)

@@ -6,6 +6,7 @@
 
   <style>
     .table {
+      width: 350px;
       display: table;
       border-collapse: collapse;
       font-size: 20px;
@@ -23,9 +24,15 @@
       color: red;
     }
 
+    .caption {
+      display: table-caption;
+      font-weight: bold;
+      width: 30%;
+    }
+
     .column {
       display: table-cell;
-      width: 50%;
+      width: 70%;
     }
   </style>
 
@@ -37,9 +44,9 @@
     {% if user %}
       <h2>User Information:</h2>
       <div class="table">
-        <div class="row"><div class="column">Id: </div><div class="column">{{ user.id }}</div></div>
-        <div class="row"><div class="column">Name: </div><div class="column">{{ user.name }}</div></div>
-        <div class="row"><div class="column">Email: </div><div class="column">{{ user.email }}</div></div>
+        <div class="row"><div class="caption">Id: </div><div class="column">{{ user.id }}</div></div>
+        <div class="row"><div class="caption">Name: </div><div class="column">{{ user.name }}</div></div>
+        <div class="row"><div class="caption">Email: </div><div class="column">{{ user.email }}</div></div>
       </div>
       <h2>
         <a href="/">return</a>
