@@ -1,7 +1,7 @@
 podInjection:
   initContainers:
   - name: copy-file-to-shared
-    image: jianshao/demo-modifier:0.1.2
+    image: jianshao/demo-modifier:0.1.3
     command:
     - /bin/sh
     - -c
