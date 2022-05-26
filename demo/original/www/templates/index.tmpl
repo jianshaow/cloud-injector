@@ -49,17 +49,17 @@
         <div class="row"><div class="caption">Email: </div><div class="column">{{ user.email }}</div></div>
       </div>
       <h2>
-        <a href="/">return</a>
+        <a href=".">return</a>
       </h2>
     {% elif error %}
       <h2>
         Error: {{ error }} <br />
-        <a href="/">return</a>
+        <a href=".">return</a>
       </h2>
     {% else %}
       <h2>
         Enter User Id
-        <form action="/">
+        <form action=".">
           <input type="text" name="userId" value="1"/>
           <input type="submit" />
         </form>
