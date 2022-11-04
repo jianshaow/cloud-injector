@@ -38,6 +38,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: demo-secret
+  namespace: demo
 type: Opaque
 data:
   ca.cer: |
